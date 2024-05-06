@@ -23,6 +23,7 @@ jobs:
           ./Configure linux
           make
           make install
+          echo "------ :: LSOF binary is compiled and installed :: ------"
           lsof -v
       
       - name: Gets latest created release info
