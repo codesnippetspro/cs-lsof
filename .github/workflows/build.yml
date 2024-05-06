@@ -1,27 +1,32 @@
-name: C/C++ CI
+name: Build and Publish LSOF Binary to a Release
 
 on:
-  push:
-  pull_request:
-    branches: [ "master" ]
+  release:
+    types: [published]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-22.04, ubuntu-20.04]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: install dependencies
-      run: sudo apt install -y pkg-config
-    - name: autoconf
-      run: autoreconf -vif
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc make libc6-dev
+
+      - name: Compile LSOF
+        run: |
+          ./configure
+          make
+
+      - name: Upload LSOF binary to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./lsof
+          asset_name: lsof-binary
+          asset_content_type: application/octet-stream
