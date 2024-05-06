@@ -1,6 +1,7 @@
 name: Build and Publish LSOF Binary to a Release
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+*"
@@ -12,14 +13,14 @@ jobs:
       - name: Set up dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc make libc6-dev
+          sudo apt-get install -y gcc make libc6-dev autotools-dev autoconf automake libtool bison flex
 
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Compile LSOF
         run: |
-          ./Configure
+          ./Configure linux
           make
           make install
           lsof -v
