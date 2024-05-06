@@ -19,8 +19,10 @@ jobs:
 
       - name: Compile LSOF
         run: |
-          ./configure
+          ./Configure
           make
+          make install
+          lsof -v
       
       - name: Create Release
         id: release
