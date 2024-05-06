@@ -25,16 +25,11 @@ jobs:
           make install
           lsof -v
       
-      - name: Create Release
-        id: release
-        uses: actions/create-release@v1.1.4
+      - name: Gets latest created release info
+        id: latest-release
+        uses: jossef/action-latest-release-info@v1.2.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
       
       - name: Upload LSOF binary to Release
         id: upload-release-asset 
@@ -42,7 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
+          upload_url: ${{ steps.latest-release.outputs.upload_url }}
           asset_path: ./lsof
           asset_name: lsof-binary
           asset_content_type: application/octet-stream
