@@ -13,18 +13,17 @@ jobs:
       - name: Set up dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc make libc6-dev autotools-dev autoconf automake libtool bison flex
+          sudo apt-get install -y gcc make libc6-dev libtirpc-dev autotools-dev autoconf automake libtool bison flex
 
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Compile LSOF
         run: |
-          ./Configure linux
-          make
-          make install
+          ./Configure -n linux
+          make CC='gcc -static' LDFLAGS='-static -static-libgcc'
           echo "------ :: LSOF binary is compiled and installed :: ------"
-          lsof -v
+          ./lsof -v
       
       - name: Gets latest created release info
         id: latest-release
