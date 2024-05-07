@@ -18,12 +18,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Compile LSOF
-        run: |
-          ./Configure -n linux
-          make CC='gcc -static' LDFLAGS='-static -static-libgcc'
-          echo "------ :: LSOF binary is compiled and installed :: ------"
-          ./lsof -v
+      # - name: Compile LSOF
+      #   run: |
+      #     ./Configure -n linux
+      #     make CC='gcc -static' LDFLAGS='-static -static-libgcc'
+      #     echo "------ :: LSOF binary is compiled and installed :: ------"
+      #     ./lsof -v
       
       - name: Gets latest created release info
         id: latest-release
@@ -38,6 +38,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.latest-release.outputs.upload_url }}
-          asset_path: ./lsof
+          asset_path: ./build/lsof-binary
           asset_name: lsof-binary
           asset_content_type: application/octet-stream
